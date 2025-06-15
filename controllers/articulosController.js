@@ -1,23 +1,33 @@
 
 const db = require('../db/connetion');
-
-
 const crearArticulo = (req, res) => {
-  const { descripcion, unidad_medida, codigoBarra, codigo, precio, costo } = req.body;
+  const {
+    descripcion,
+    unidad_medida,
+    codigoBarra,
+    codigo,
+    precio,
+    costo,
+    IdGrupoArticulo
+  } = req.body;
+
+  console.log('Datos recibidos:', req.body); // ✅ Esto sí sirve
 
   const sql = `
     INSERT INTO Articulos 
-    (descripcion, unidad_medida, codigo_barra, codigo, precio, costo, IdGrupoArticulos)
-  VALUES (?, ?, ?, ?, ?, ?, 1)
+    (Descripcion, Unidad_medida, Codigo_barra, Codigo, Precio, Costo, IdGrupoArticulos)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
   `;
-  //const sql =`Use Stock`;
-  db.query(sql, [descripcion, unidad_medida, codigoBarra, codigo, precio, costo], (err, result) => {
+
+  const values = [descripcion, unidad_medida, codigoBarra, codigo, precio, costo, IdGrupoArticulo];
+
+  db.query(sql, values, (err, result) => {
     if (err) {
-    console.error(db.query(sql));
-    return res.status(500).send(err);
-  }
+      console.error('Error al insertar artículo:', err); // ✅ Imprime el error real
+      return res.status(500).send(err);
+    }
+
     res.status(201).json({ message: 'Artículo insertado', id: result.insertId });
-    //console.error(db.query(sql));
   });
 };
 
