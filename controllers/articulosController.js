@@ -11,7 +11,7 @@ const crearArticulo = (req, res) => {
     IdGrupoArticulo
   } = req.body;
 
-  console.log('Datos recibidos:', req.body); // ✅ Esto sí sirve
+  console.log('Datos recibidos:', req.body);
 
   const sql = `
     INSERT INTO Articulos 
@@ -23,7 +23,7 @@ const crearArticulo = (req, res) => {
 
   db.query(sql, values, (err, result) => {
     if (err) {
-      console.error('Error al insertar artículo:', err); // ✅ Imprime el error real
+      console.error('Error al insertar artículo:', err);
       return res.status(500).send(err);
     }
 
