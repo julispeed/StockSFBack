@@ -3,7 +3,10 @@ const db = require('../db/connetion');
 
 
 const crearGrupo = (req, res) => {
-  const { Nombre, Descripcion, IdFamilia } = req.body;
+  const {
+    Nombre,
+    Descripcion,
+    IdFamilia } = req.body;
 
   const sql = `
     INSERT INTO GrupoArticulos

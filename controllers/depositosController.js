@@ -28,6 +28,14 @@ const crearDeposito = (req, res) => {
   });
 };
 
+const obtenerDepositos = (req, res) => {
+  const sql=`Select Nombre, IdDeposito from Depositos`;
+  db.query(sql ,(err,result)=>{
+    if (err) return res.status(500).send(err);
+    res.json(result);
+  })
+}
 module.exports = {
   crearDeposito,
+  obtenerDepositos
 };
