@@ -21,6 +21,10 @@ const crearDeposito = (req, res) => {
   db.query(sql, values, (err, result) => {
     if (err) {
       console.error('Error al insertar Deposito:', err);
+      if (err.code==='ER_DUP_ENTRY')
+      {
+        return res.status(400).json({message: 'Ya existe una deposito con ese nombre.'})
+      }
       return res.status(500).send(err);
     }
 

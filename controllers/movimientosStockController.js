@@ -7,18 +7,11 @@ const crearMovimiento = (req, res) => {
   if (!TipoMovimiento || !Prefijo || !IdDeposito || !Articulos?.length) {
     return res.status(400).json({ message: 'Faltan datos requeridos' });
   }
-
-  
-
   const sqlUltimo = `
     SELECT MAX(Numero) AS maxNumero 
     FROM MovimientosStock 
     WHERE TipoMovimiento = ? AND Prefijo = ?
   `;
-  
-  
-
-
   db.query(sqlUltimo, [TipoMovimiento, Prefijo], (err, result) => {
     if (err) return res.status(500).send(err);
 
