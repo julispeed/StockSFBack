@@ -33,13 +33,57 @@ const crearDeposito = (req, res) => {
 };
 
 const obtenerDepositos = (req, res) => {
-  const sql=`Select Nombre, IdDeposito from Depositos`;
+  const sql=`Select IdDeposito, Nombre, IdDeposito from Depositos`;
   db.query(sql ,(err,result)=>{
     if (err) return res.status(500).send(err);
     res.json(result);
   })
+};
+
+const eliminarDeposito =(req, res) => {
+      const sql = `
+    DELETE FROM Depositos    
+      WHERE IdDeposito = ?
+  `;
+  const values=req.params.id;  
+  db.query(sql, values, (err) => {
+    if (err) {
+      console.error('Error al eliminar deposito:', err);
+      return res.status(500).json({ message: 'Error interno del servidor' });
+    }
+  else
+  {
+    res.status(201).json({ message: 'Deposito eliminado'});
+  }})
+}
+
+const actualizarDeposito =(req, res) =>
+{
+ const { id } = req.params;
+  const {
+    Nombre,
+    Descripcion,                
+  } = req.body;  
+console.log('Datos recibidos:', req.body);
+  const sql = `
+    UPDATE Descripcion
+    SET Nombre = ? ,  Descripcion = ?
+    WHERE IdDeposito = ?
+  `;
+
+  const values = [Nombre, Descripcion, id];
+
+  db.query(sql, values, (err) => {
+    if (err) {
+      console.error('Error al actualizar deposito:', err);
+      return res.status(500).json({ message: 'Error interno del servidor' });
+    }
+    res.json({ message: 'Deposito actualizada correctamente' });
+  });
 }
 module.exports = {
   crearDeposito,
-  obtenerDepositos
+  obtenerDepositos,
+  eliminarDeposito,
+  actualizarDeposito
 };

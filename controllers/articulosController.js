@@ -76,9 +76,8 @@ const buscarArticulo =(req,res)=>
   });
 };
 
-const listarArticulo = (res) =>
-{
-   const sql = `
+const listarArticulo = (req, res) => {
+  const sql = `
     SELECT IdArticulo, Descripcion, Unidad_medida, Codigo_barra, Codigo, Precio, Costo, IdGrupoArticulos
     FROM Articulos
   `;
@@ -90,8 +89,8 @@ const listarArticulo = (res) =>
     }
     res.json(results);
   });
+};
 
-}
 
 const actualizarArticulo = (req, res) => {
   const { id } = req.params;
