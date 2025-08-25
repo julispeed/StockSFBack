@@ -7,6 +7,7 @@ const gruposRoutes = require('./routes/grupos');
 const depositoRoutes = require('./routes/depositos');
 const ProveedoresRoutes = require('./routes/proveedores');
 const movimientosRoutes = require('./routes/movimientosStock');
+const stoksRoutes = require('./routes/stocks');
 
 
 app.use(cors());
@@ -19,6 +20,7 @@ app.use('/grupos', gruposRoutes);
 app.use('/depositos', depositoRoutes);               
 app.use('/proveedores', ProveedoresRoutes);             
 app.use('/movimientos', movimientosRoutes);
+app.use('/stocks', stoksRoutes);
 
 
 
