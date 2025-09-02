@@ -1,6 +1,7 @@
 
-const db = require('../db/connetion');
-const crearDeposito = (req, res) => {
+import db from '../db/connetion.js';
+
+ const crearDeposito = (req, res) => {
   const {
     Nombre,
     Descripcion
@@ -31,8 +32,7 @@ const crearDeposito = (req, res) => {
     res.status(201).json({ message: 'Deposito insertado', id: result.insertId });
   });
 };
-
-const obtenerDepositos = (req, res) => {
+ const obtenerDepositos = (req, res) => {
   const sql=`Select IdDeposito, Nombre, IdDeposito from Depositos`;
   db.query(sql ,(err,result)=>{
     if (err) return res.status(500).send(err);
@@ -56,8 +56,7 @@ const eliminarDeposito =(req, res) => {
     res.status(201).json({ message: 'Deposito eliminado'});
   }})
 }
-
-const actualizarDeposito =(req, res) =>
+ const actualizarDeposito =(req, res) =>
 {
  const { id } = req.params;
   const {
@@ -81,7 +80,7 @@ console.log('Datos recibidos:', req.body);
     res.json({ message: 'Deposito actualizada correctamente' });
   });
 }
-module.exports = {
+export {
   crearDeposito,
   obtenerDepositos,
   eliminarDeposito,

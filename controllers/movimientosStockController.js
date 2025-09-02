@@ -1,5 +1,5 @@
-const { json } = require('express');
-const db = require('../db/connetion');
+
+import db from '../db/connetion.js';
 
 const crearMovimiento = (req, res) => {
   const { TipoMovimiento, Prefijo, IdDeposito, Articulos } = req.body;
@@ -47,7 +47,7 @@ const crearMovimiento = (req, res) => {
   });
 };
 
-const obtenerProximoMovimiento=(req, res) => {
+ const obtenerProximoMovimiento=(req, res) => {
 
   const { TipoMovimiento, Prefijo } = req.query;
 
@@ -69,7 +69,7 @@ const obtenerProximoMovimiento=(req, res) => {
   })
 }
 
-module.exports = { 
+export  { 
   crearMovimiento,
   obtenerProximoMovimiento
  };

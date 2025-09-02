@@ -1,5 +1,6 @@
 
-const db = require('../db/connetion');
+import db from '../db/connetion.js';
+
 
 const crearArticulo = (req, res) => {
   const {
@@ -52,7 +53,7 @@ console.log(values);
   });
 };
 
-const buscarArticulo =(req,res)=>
+ const buscarArticulo =(req,res)=>
 {
   const { termino } = req.query;
 
@@ -125,7 +126,7 @@ const actualizarArticulo = (req, res) => {
   });
 };
 
-const elminarArticulo = (req, res) =>{
+ const elminarArticulo = (req, res) =>{
     const sql = `
     DELETE FROM Articulos    
       WHERE IdArticulo = ?
@@ -142,7 +143,7 @@ const elminarArticulo = (req, res) =>{
   }})
 }
 
-module.exports = {
+export  {
   crearArticulo,
   buscarArticulo,
   listarArticulo,

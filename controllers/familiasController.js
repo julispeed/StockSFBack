@@ -1,5 +1,6 @@
 
-const db = require('../db/connetion');
+import db from '../db/connetion.js';
+
 
 
 const crearFamilia = (req, res) => {
@@ -57,7 +58,7 @@ console.log('Datos recibidos:', req.body);
   });
 }
 
-const eliminarFamilia = (req, res) =>
+ const eliminarFamilia = (req, res) =>
 {
  const sql = `
       DELETE FROM Familias    
@@ -75,7 +76,7 @@ const eliminarFamilia = (req, res) =>
   }})
 }
 
-module.exports = {
+export  {
   crearFamilia,
   obtenerFamilias,
   actualizarFamilia,
