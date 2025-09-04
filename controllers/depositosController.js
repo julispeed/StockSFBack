@@ -1,7 +1,7 @@
 
 import db from '../db/connetion.js';
 
- const crearDeposito = (req, res) => {
+ const crearDeposito = async (req, res) => {
   const {
     Nombre,
     Descripcion
@@ -9,6 +9,7 @@ import db from '../db/connetion.js';
 
   console.log('Datos recibidos:', req.body);
 
+  try {
   const sql = `
     INSERT INTO Depositos 
     (Nombre, Descripcion)
@@ -17,20 +18,17 @@ import db from '../db/connetion.js';
 
   const values = [Nombre, Descripcion];
   console.log("Valores que se insertan:", values);
-
-
-  db.query(sql, values, (err, result) => {
-    if (err) {
-      console.error('Error al insertar Deposito:', err);
+  const [result] = await db.query(sql, values);
+  res.status(201).json({ message: 'Deposito insertado', id: result.insertId });
+  }
+  catch(err) {
+    console.error('Error al insertar Deposito:', err);
       if (err.code==='ER_DUP_ENTRY')
       {
         return res.status(400).json({message: 'Ya existe una deposito con ese nombre.'})
       }
       return res.status(500).send(err);
-    }
-
-    res.status(201).json({ message: 'Deposito insertado', id: result.insertId });
-  });
+  }
 };
  const obtenerDepositos = (req, res) => {
   const sql=`Select IdDeposito, Nombre, IdDeposito from Depositos`;
