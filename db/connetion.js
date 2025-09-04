@@ -1,20 +1,22 @@
-const mysql = require('mysql2');
+import mysql from "mysql2/promise";
+import dotenv from "dotenv";
 
+dotenv.config();
 
-const db = mysql.createConnection({
-  host: process.env.DB_HOST || 'localhost',
-  user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD || 'Laika2020',
-  database: process.env.DB_NAME || 'Stock',
+const connection = await mysql.createConnection({
+  host: process.env.MYSQLHOST,
+  port: process.env.MYSQLPORT,
+  user: process.env.MYSQLUSER,
+  password: process.env.MYSQLPASSWORD,
+  database: process.env.MYSQLDATABASE,
 });
 
-db.connect(err => {
+connection.connect(err => {
   if (err) {
-    console.error('Error de conexión:', err);
-    return;
+    console.error('❌ Error al conectar con MySQL:', err);
+  } else {
+    console.log('✅ Conectado a MySQL en Railway');
   }
-  console.log('Conectado a MySQL');
 });
 
-module.exports = db;
-
+export default connection;

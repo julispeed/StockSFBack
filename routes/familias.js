@@ -1,9 +1,9 @@
-const express = require('express');
-const router = express.Router();
-const { crearFamilia, obtenerFamilias, actualizarFamilia,eliminarFamilia } = require('../controllers/familiasController.js');
+import express from 'express';
 
+import { crearFamilia, obtenerFamilias, actualizarFamilia,eliminarFamilia } from '../controllers/familiasController.js';
+const router = express.Router();
 router.post('/crear', crearFamilia);
 router.get('/', obtenerFamilias);
 router.put('/actualizar/:id', actualizarFamilia);
 router.delete('/eliminar/:id', eliminarFamilia);
-module.exports = router;
+export default router;

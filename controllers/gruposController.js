@@ -1,4 +1,5 @@
-const db = require('../db/connetion');
+import db from '../db/connetion.js';
+
 
 
 const crearGrupo = (req, res) => {
@@ -79,7 +80,7 @@ const eliminarGrupo = (req, res) => {
   }})
 }
 
-module.exports = {
+export  {
   crearGrupo,
   obtenerGrupos,
   actualizarGrupo,

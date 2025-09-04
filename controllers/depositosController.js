@@ -1,6 +1,7 @@
 
-const db = require('../db/connetion');
-const crearDeposito = (req, res) => {
+import db from '../db/connetion.js';
+
+ const crearDeposito = async (req, res) => {
   const {
     Nombre,
     Descripcion
@@ -8,6 +9,7 @@ const crearDeposito = (req, res) => {
 
   console.log('Datos recibidos:', req.body);
 
+  try {
   const sql = `
     INSERT INTO Depositos 
     (Nombre, Descripcion)
@@ -16,23 +18,19 @@ const crearDeposito = (req, res) => {
 
   const values = [Nombre, Descripcion];
   console.log("Valores que se insertan:", values);
-
-
-  db.query(sql, values, (err, result) => {
-    if (err) {
-      console.error('Error al insertar Deposito:', err);
+  const [result] = await db.query(sql, values);
+  res.status(201).json({ message: 'Deposito insertado', id: result.insertId });
+  }
+  catch(err) {
+    console.error('Error al insertar Deposito:', err);
       if (err.code==='ER_DUP_ENTRY')
       {
         return res.status(400).json({message: 'Ya existe una deposito con ese nombre.'})
       }
       return res.status(500).send(err);
-    }
-
-    res.status(201).json({ message: 'Deposito insertado', id: result.insertId });
-  });
+  }
 };
-
-const obtenerDepositos = (req, res) => {
+ const obtenerDepositos = (req, res) => {
   const sql=`Select IdDeposito, Nombre, IdDeposito from Depositos`;
   db.query(sql ,(err,result)=>{
     if (err) return res.status(500).send(err);
@@ -56,8 +54,7 @@ const eliminarDeposito =(req, res) => {
     res.status(201).json({ message: 'Deposito eliminado'});
   }})
 }
-
-const actualizarDeposito =(req, res) =>
+ const actualizarDeposito =(req, res) =>
 {
  const { id } = req.params;
   const {
@@ -81,7 +78,7 @@ console.log('Datos recibidos:', req.body);
     res.json({ message: 'Deposito actualizada correctamente' });
   });
 }
-module.exports = {
+export {
   crearDeposito,
   obtenerDepositos,
   eliminarDeposito,

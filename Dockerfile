@@ -1,18 +1,17 @@
-# Imagen base de Node.js
 FROM node:18
 
-# Crear y entrar al directorio de trabajo
 WORKDIR /app
 
-# Copiar los archivos necesarios para instalar dependencias
 COPY package*.json ./
 RUN npm install
 
-# Copiar el resto del código
 COPY . .
+COPY wait-for-it.sh ./
 
-# Exponer el puerto
+# Dar permisos de ejecución al script
+RUN chmod +x wait-for-it.sh
+
 EXPOSE 3000
 
-# Comando para arrancar la app
-CMD ["node", "index.js"]
+# Usamos bash para ejecutar el script
+CMD ["bash", "./wait-for-it.sh", "db:3306", "--timeout=60", "--strict", "--", "npm", "start"]

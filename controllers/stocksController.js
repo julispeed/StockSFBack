@@ -1,4 +1,5 @@
-const db = require('../db/connetion');
+import db from '../db/connetion.js';
+
 
 
 const stocksArticulos = (req, res) => {
@@ -40,6 +41,6 @@ ORDER BY a.Descripcion;
   });  
 };
 
-module.exports = {
+export  {
   stocksArticulos,
 }

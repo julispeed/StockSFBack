@@ -1,4 +1,5 @@
-const db= require('../db/connetion');
+import db from '../db/connetion.js';
+
 
 const crearProveedor= (req,res) =>{
     const  {
@@ -36,7 +37,7 @@ const crearProveedor= (req,res) =>{
   });
 };
 
-const obtenerProveedores = (req, res) => {
+ const obtenerProveedores = (req, res) => {
   const sql = 'SELECT IdProveedor, RazonSocial, Codigo, Direccion, Correo, Telefono, CBU, CondicionIVA FROM Proveedores';
     db.query(sql, (err, results) => {
     if (err) {
@@ -46,7 +47,6 @@ const obtenerProveedores = (req, res) => {
     res.json(results);
   });
 };
-
 const actualizarProveedor = (req, res) => {
   const { id } = req.params;
   const {
@@ -92,7 +92,7 @@ const eliminarProveedor =(req, res) => {
     res.status(201).json({ message: 'Proveedor eliminado'});
   }})
 }
-module.exports = {
+export {
   crearProveedor,
   obtenerProveedores,
   eliminarProveedor,
