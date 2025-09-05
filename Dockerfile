@@ -13,5 +13,5 @@ RUN chmod +x wait-for-it.sh
 
 EXPOSE 3000
 
-# Usamos bash para ejecutar el script
+
 CMD ["./wait-for-it.sh", "db:3306", "--timeout=60", "--strict", "--", "npm", "start"]
