@@ -6,7 +6,7 @@ COPY package*.json ./
 RUN npm install
 
 COPY . .
-COPY wait-for-it.sh ./
+
 
 # Dar permisos de ejecución al script
 RUN chmod +x wait-for-it.sh
