@@ -142,5 +142,5 @@ export {
   buscarArticulo,
   listarArticulo,
   actualizarArticulo,
-  eliminarArticulo
+  eliminarArticulo,
 };

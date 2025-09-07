@@ -1,5 +1,5 @@
 import express from 'express';
-import { crearArticulo, buscarArticulo, listarArticulo, actualizarArticulo, elminarArticulo } from '../controllers/articulosController.js';
+import { crearArticulo, buscarArticulo, listarArticulo, actualizarArticulo, eliminarArticulo } from '../controllers/articulosController.js';
 
 const router = express.Router();
 
@@ -7,6 +7,6 @@ router.post('/crear', crearArticulo);
 router.get('/buscar', buscarArticulo);
 router.get('/listar', listarArticulo);
 router.put('/actualizar/:id', actualizarArticulo);
-router.delete('/eliminar/:id', elminarArticulo);
+router.delete('/eliminar/:id', eliminarArticulo);
 
 export default router;
