@@ -13,6 +13,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Rutas de tu API
 app.use('/articulos', articulosRoutes);
 app.use('/familias', familiasRoutes);
 app.use('/grupos', gruposRoutes);
@@ -21,6 +22,12 @@ app.use('/proveedores', ProveedoresRoutes);
 app.use('/movimientos', movimientosRoutes);
 app.use('/stocks', stoksRoutes);
 
+// Ruta raíz para comprobar que el server responde
+app.get("/", (req, res) => {
+  res.send("✅ API funcionando en Railway 🚀");
+});
+
+// Railway usa su propio puerto (PORT), si no existe, usar 3000 en local
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
