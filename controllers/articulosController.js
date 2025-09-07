@@ -1,4 +1,4 @@
-import db from '../db/connection.js';
+import db from '../db/connetion.js';
 
 // Crear artículo
 const crearArticulo = async (req, res) => {
