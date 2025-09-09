@@ -57,14 +57,14 @@ catch (err) {
 };
 
 const eliminarGrupo = async (req, res) => {
+  const { id } = req.params;
       const sql = `
       DELETE FROM GruposArticulos    
       WHERE IdGrupoArticulo = ?
-      `;
-  const values=req.params.id;  
+      `;  
 
   try {
-    await db.query(sql, values);
+    await db.query(sql, [id]);
     res.status(201).json({ message: 'Grupo eliminado'});
   }
   catch (err) {
