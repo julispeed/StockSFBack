@@ -2,7 +2,7 @@ import db from '../db/connetion.js';
 
 
 
-const stocksArticulos = (req, res) => {
+const stocksArticulos = async (req, res) => {
   const sql = 
   `
 SELECT
@@ -34,11 +34,15 @@ GROUP BY
     a.Costo,
     a.IdGrupoArticulos
 ORDER BY a.Descripcion;
-  `
-      db.query(sql, (err, results) => {
-    if (err) return res.status(500).json({ message: 'Error en el servidor', error: err });
-    res.json(results);
-  });  
+  `;
+  try {
+      db.query(sql);
+      res.json(results);
+  }
+  catch (err) {
+    console.error("Error en listado:", err);  
+    res.status(500).json({ message: 'Error en el servidor', error: err });
+  }
 };
 
 export  {
