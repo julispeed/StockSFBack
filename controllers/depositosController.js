@@ -29,11 +29,11 @@ import db from '../db/connetion.js';
   }
 };
  const obtenerDepositos = async (req, res) => {
-  const sql=`Select IdDeposito, Nombre, IdDeposito from Depositos`;
+  const sql=`Select IdDeposito, Nombre, Descripcion from Depositos`;
   try {
       db.query(sql ,(err,result)=>{    
-    res.json(result);
-  })
+      res.json(result);
+      })
   }
   catch (err) {
     return res.status(500).send(err);
@@ -46,9 +46,9 @@ const eliminarDeposito = async (req, res) => {
     DELETE FROM Depositos    
       WHERE IdDeposito = ?
   `;
-  const values=req.params.id;  
-  try {
-     await res.status(201).json({ message: 'Deposito eliminado'});
+    const values = [req.params.id];
+  try { 
+    const [result] = await db.query(sql, values);    
     }
     catch(err) {
     console.error('Error al eliminar deposito:', err);
@@ -65,7 +65,7 @@ const eliminarDeposito = async (req, res) => {
   } = req.body;  
 console.log('Datos recibidos:', req.body);
   const sql = `
-    UPDATE Descripcion
+    UPDATE Depositos
     SET Nombre = ? ,  Descripcion = ?
     WHERE IdDeposito = ?
   `;
