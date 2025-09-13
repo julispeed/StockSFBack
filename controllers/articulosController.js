@@ -119,9 +119,10 @@ const actualizarArticulo = async (req, res) => {
 
 // Eliminar artículo
 const eliminarArticulo = async (req, res) => {
-  try {
-    const sql = `DELETE FROM Articulos WHERE IdArticulo = ?`;
-    await db.query(sql, [req.params.id]);
+  const sql = `DELETE FROM Articulos WHERE IdArticulo = ?`;
+  const { id } = req.params;
+  try {    
+    await db.query(sql, [id]);
     res.status(200).json({ message: 'Artículo eliminado' });
   } catch (err) {
     console.error('Error al eliminar artículo:', err);

@@ -28,30 +28,34 @@ import db from '../db/connetion.js';
       return res.status(500).send(err);
   }
 };
- const obtenerDepositos = (req, res) => {
+ const obtenerDepositos = async (req, res) => {
   const sql=`Select IdDeposito, Nombre, IdDeposito from Depositos`;
-  db.query(sql ,(err,result)=>{
-    if (err) return res.status(500).send(err);
+  try {
+      db.query(sql ,(err,result)=>{    
     res.json(result);
   })
+  }
+  catch (err) {
+    return res.status(500).send(err);
+  }
+  
 };
 
-const eliminarDeposito =(req, res) => {
+const eliminarDeposito = async (req, res) => {
       const sql = `
     DELETE FROM Depositos    
       WHERE IdDeposito = ?
   `;
   const values=req.params.id;  
-  db.query(sql, values, (err) => {
-    if (err) {
-      console.error('Error al eliminar deposito:', err);
-      return res.status(500).json({ message: 'Error interno del servidor' });
+  try {
+     await res.status(201).json({ message: 'Deposito eliminado'});
     }
-  else
-  {
-    res.status(201).json({ message: 'Deposito eliminado'});
-  }})
-}
+    catch(err) {
+    console.error('Error al eliminar deposito:', err);
+    return res.status(500).json({ message: 'Error interno del servidor' });
+    }  
+  }
+
  const actualizarDeposito =(req, res) =>
 {
  const { id } = req.params;
