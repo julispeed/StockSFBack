@@ -1,7 +1,7 @@
 import db from '../db/connetion.js';
 
 
-const crearProveedor= (req,res) =>{
+const crearProveedor= async (req,res) =>{
     const  {
         RazonSocial,
         Codigo,
@@ -24,30 +24,37 @@ const crearProveedor= (req,res) =>{
     )
     VALUES (?, ?, ?, ?, ?, ?, ?)
     `;
-    db.query(sql, [RazonSocial, Codigo, Direccion, CondicionIVA, Telefono, CBU, Correo], (err, result) => {
-  if (err) {
-    console.error('Error al insertar Proveedor:', err);
-    if (err.code==='ER_DUP_ENTRY')
-    {
-      return res.status(400).json({message: 'Proveedor con Razon social, CUIT o Codigo repetido'});
-    }
-    return res.status(500).send(err);
-  }
-    res.status(201).json({ message: 'Proveedor Insertado', id: result.insertId });    
-  });
+    const values = [RazonSocial, Codigo, Direccion, CondicionIVA, Telefono, CBU, Correo];
+      try {
+          const [result] = await db.query(sql, values);
+          res.status(201).json({ message: 'Proveedor insertado',id: result.insertId});
+      }
+      catch(err)
+      {
+         console.error('Error al insertar Proveedor:', err);
+          if (err.code==='ER_DUP_ENTRY')
+            {
+              return res.status(400).json({message: 'Proveedor con Razon social, CUIT o Codigo repetido'});
+            }
+          return res.status(500).send(err);
+      }
 };
 
- const obtenerProveedores = (req, res) => {
+ const obtenerProveedores = async (req, res) => {
   const sql = 'SELECT IdProveedor, RazonSocial, Codigo, Direccion, Correo, Telefono, CBU, CondicionIVA FROM Proveedores';
-    db.query(sql, (err, results) => {
-    if (err) {
-      console.error('Error al listar Proveedores:', err);
-      return res.status(500).json({ message: 'Error en el servidor' });
-    }
-    res.json(results);
-  });
+
+  try {
+  const [result] = await db.query(sql);
+    res.json(result);
+  }
+  catch (err)
+  {
+    console.error('Error al listar Proveedores:', err);
+    return res.status(500).json({ message: 'Error en el servidor' });
+  }
+
 };
-const actualizarProveedor = (req, res) => {
+const actualizarProveedor = async (req, res) => {
   const { id } = req.params;
   const {
     RazonSocial,
@@ -67,31 +74,31 @@ const actualizarProveedor = (req, res) => {
 
   const values = [RazonSocial, CondicionIVA, Direccion, Codigo, Telefono, CBU, Correo, id];
 
-  db.query(sql, values, (err) => {
-    if (err) {
-      console.error('Error al actualizar Proveedor:', err);
-      return res.status(500).json({ message: 'Error interno del servidor' });
+    try {
+          await db.query(sql, values);
+          res.json({ message: 'Proveedor actualizado correctamente' });
     }
-    res.json({ message: 'Proveedor actualizado correctamente' });
-  });
+    catch (err) {
+        console.error('Error al actualizar Proveedor:', err);
+        return res.status(500).json({ message: 'Error interno del servidor' });
+    }
 };
 
-const eliminarProveedor =(req, res) => {
+const eliminarProveedor = async (req, res) => {
       const sql = `
-    DELETE FROM Proveedores    
+      DELETE FROM Proveedores    
       WHERE IdProveedor = ?
   `;
-  const values=req.params.id;  
-  db.query(sql, values, (err) => {
-    if (err) {
+  const { id } = req.params;
+  try {
+      await db.query(sql, [id]);
+      res.status(200).json({ message: 'Proveedor eliminado' });
+  }
+  catch (err) {
       console.error('Error al eliminar proveedor:', err);
       return res.status(500).json({ message: 'Error interno del servidor' });
-    }
-  else
-  {
-    res.status(201).json({ message: 'Proveedor eliminado'});
-  }})
-}
+  }
+};
 export {
   crearProveedor,
   obtenerProveedores,
