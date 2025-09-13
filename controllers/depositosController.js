@@ -8,15 +8,13 @@ import db from '../db/connetion.js';
   } = req.body;
 
   console.log('Datos recibidos:', req.body);
-
-  try {
   const sql = `
     INSERT INTO Depositos 
     (Nombre, Descripcion)
     VALUES (?, ?)
   `;
-
-  const values = [Nombre, Descripcion];
+   const values = [Nombre, Descripcion];
+  try {
   console.log("Valores que se insertan:", values);
   const [result] = await db.query(sql, values);
   res.status(201).json({ message: 'Deposito insertado', id: result.insertId });
