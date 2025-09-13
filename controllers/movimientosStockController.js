@@ -1,53 +1,56 @@
 
 import db from '../db/connetion.js';
-
-const crearMovimiento = (req, res) => {
+const crearMovimiento = async (req, res) => {
   const { TipoMovimiento, Prefijo, IdDeposito, Articulos } = req.body;
 
   if (!TipoMovimiento || !Prefijo || !IdDeposito || !Articulos?.length) {
     return res.status(400).json({ message: 'Faltan datos requeridos' });
   }
-  const sqlUltimo = `
-    SELECT MAX(Numero) AS maxNumero 
-    FROM MovimientosStock 
-    WHERE TipoMovimiento = ? AND Prefijo = ?
-  `;
-  db.query(sqlUltimo, [TipoMovimiento, Prefijo], (err, result) => {
-    if (err) return res.status(500).send(err);
 
-    const nuevoNumero = (result[0].maxNumero || 0) + 1;
+  try {
+    // Obtener último número
+    const sqlUltimo = `
+      SELECT MAX(Numero) AS maxNumero 
+      FROM MovimientosStock 
+      WHERE TipoMovimiento = ? AND Prefijo = ?
+    `;
+    const [rows] = await db.query(sqlUltimo, [TipoMovimiento, Prefijo]);
+    const nuevoNumero = (rows[0]?.maxNumero || 0) + 1;
 
+    // Insertar movimiento
     const sqlInsertMovimiento = `
       INSERT INTO MovimientosStock (TipoMovimiento, Prefijo, Numero, IdDeposito)
       VALUES (?, ?, ?, ?)
     `;
+    const [resultMovimiento] = await db.query(sqlInsertMovimiento, [
+      TipoMovimiento,
+      Prefijo,
+      nuevoNumero,
+      IdDeposito
+    ]);
+    const idMovimiento = resultMovimiento.insertId;
 
-    db.query(sqlInsertMovimiento, [TipoMovimiento, Prefijo, nuevoNumero, IdDeposito], (err2, result2) => {
-      if (err2) return res.status(500).send(err2);
+    // Insertar detalle
+    const sqlInsertDetalle = `
+      INSERT INTO MovimientosDetalleStock (IdMovimientoStock, IdArticulo, Cantidad)
+      VALUES ?
+    `;
+    const valores = Articulos.map(a => [idMovimiento, a.IdArticulo, a.Cantidad]);
+    await db.query(sqlInsertDetalle, [valores]);
 
-      const idMovimiento = result2.insertId;
-
-      const sqlInsertDetalle = `
-        INSERT INTO MovimientosDetalleStock (IdMovimientoStock, IdArticulo, Cantidad)
-        VALUES ?
-      `;
-
-      const valores = Articulos.map(a => [idMovimiento, a.IdArticulo, a.Cantidad]);
-
-      db.query(sqlInsertDetalle, [valores], (err3) => {
-        if (err3) return res.status(500).send(err3);
-
-        res.status(201).json({
-          message: 'Movimiento registrado correctamente',
-          Numero: `${Prefijo}-${nuevoNumero}`,
-          IdMovimientoStock: idMovimiento
-        });
-      });
+    // Respuesta final
+    res.status(201).json({
+      message: 'Movimiento registrado correctamente',
+      Numero: `${Prefijo}-${nuevoNumero}`,
+      IdMovimientoStock: idMovimiento
     });
-  });
+  } catch (err) {
+    console.error("Error al crear movimiento:", err);
+    return res.status(500).json({ message: 'Error interno del servidor' });
+  }
 };
 
- const obtenerProximoMovimiento=(req, res) => {
+ const obtenerProximoMovimiento= async (req, res) => {
 
   const { TipoMovimiento, Prefijo } = req.query;
 
@@ -61,12 +64,15 @@ const crearMovimiento = (req, res) => {
     FROM MovimientosStock
     WHERE TipoMovimiento = ? AND Prefijo = ?
   `;
+try {
+  const [rows] = await db.query(sql, [TipoMovimiento, Prefijo]);
+  const proximoNumero = (rows[0]?.maxNumero || 0) + 1;
+  res.json({ proximoNumero });
+} catch (err) {
+  console.error("Error al obtener próximo número:", err);
+  res.status(500).json({ message: "Error interno del servidor" });
+}
 
-  db.query(sql, [TipoMovimiento,Prefijo],(err,result)=>{
-    if (err) return res.status(500).send(err);
-    const proximoNumero = (result[0].maxNumero || 0)+1;
-    res.json({proximoNumero});
-  })
 }
 
 export  { 
