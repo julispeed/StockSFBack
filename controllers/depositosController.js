@@ -28,58 +28,54 @@ import db from '../db/connetion.js';
       return res.status(500).send(err);
   }
 };
- const obtenerDepositos = async (req, res) => {
-  const sql=`Select IdDeposito, Nombre, Descripcion from Depositos`;
+const obtenerDepositos = async (req, res) => {
+  const sql = `SELECT IdDeposito, Nombre, Descripcion FROM Depositos`;
   try {
-      db.query(sql ,(err,result)=>{    
-      res.json(result);
-      })
+    const [result] = await db.query(sql);
+    res.json(result);
+  } catch (err) {
+    console.error('Error al obtener depositos:', err);
+    return res.status(500).json({ message: 'Error interno del servidor' });
   }
-  catch (err) {
-    return res.status(500).send(err);
-  }
-  
 };
 
 const eliminarDeposito = async (req, res) => {
-      const sql = `
-    DELETE FROM Depositos    
-      WHERE IdDeposito = ?
-  `;
-    const values = [req.params.id];
-  try { 
-    const [result] = await db.query(sql, values);    
+  const sql = `DELETE FROM Depositos WHERE IdDeposito = ?`;
+  const values = [req.params.id];
+  try {
+    const [result] = await db.query(sql, values);
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: 'Depósito no encontrado' });
     }
-    catch(err) {
+    res.json({ message: 'Depósito eliminado correctamente' });
+  } catch (err) {
     console.error('Error al eliminar deposito:', err);
     return res.status(500).json({ message: 'Error interno del servidor' });
-    }  
   }
+};
 
- const actualizarDeposito =(req, res) =>
-{
- const { id } = req.params;
-  const {
-    Nombre,
-    Descripcion,                
-  } = req.body;  
-console.log('Datos recibidos:', req.body);
+const actualizarDeposito = async (req, res) => {
+  const { id } = req.params;
+  const { Nombre, Descripcion } = req.body;
+
   const sql = `
     UPDATE Depositos
-    SET Nombre = ? ,  Descripcion = ?
+    SET Nombre = ?, Descripcion = ?
     WHERE IdDeposito = ?
   `;
-
   const values = [Nombre, Descripcion, id];
 
-  db.query(sql, values, (err) => {
-    if (err) {
-      console.error('Error al actualizar deposito:', err);
-      return res.status(500).json({ message: 'Error interno del servidor' });
+  try {
+    const [result] = await db.query(sql, values);
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: 'Depósito no encontrado' });
     }
-    res.json({ message: 'Deposito actualizada correctamente' });
-  });
-}
+    res.json({ message: 'Depósito actualizado correctamente' });
+  } catch (err) {
+    console.error('Error al actualizar deposito:', err);
+    return res.status(500).json({ message: 'Error interno del servidor' });
+  }
+};
 export {
   crearDeposito,
   obtenerDepositos,
