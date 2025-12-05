@@ -43,26 +43,31 @@ const crearArticulo = async (req, res) => {
 // Buscar artículo
 const buscarArticulo = async (req, res) => {
   const { termino } = req.query;
-  if (!termino) {
-    return res.status(400).json({ message: 'Falta el término de búsqueda' });
-  }
 
-
-    const sql = `
-      SELECT IdArticulo, Descripcion, Codigo_barra, Codigo, Precio, Costo 
-      FROM Articulos 
-      WHERE Codigo LIKE ? OR Codigo_barra = ? OR Descripcion LIKE ?
-    `;
+  try {
+    // Si no hay término, devolver todos los artículos
+    if (!termino || termino.trim() === "") {
+      const [all] = await db.query(`
+        SELECT IdArticulo, Descripcion, Codigo_barra, Codigo, Precio, Costo 
+        FROM Articulos
+      `);
+      return res.json(all);
+    }
 
     const likeTerm = `%${termino}%`;
-    try {
-      const [results] = await db.query(sql, [likeTerm, termino, likeTerm]);
-      res.json(results);
-    }
-    catch (err) {
-          console.error('Error al buscar artículo:', err);
-          res.status(500).send(err);
-    } 
+    
+    const [results] = await db.query(
+      `SELECT IdArticulo, Descripcion, Codigo_barra, Codigo, Precio, Costo
+       FROM Articulos
+       WHERE Codigo LIKE ? OR Codigo_barra LIKE ? OR Descripcion LIKE ?`,
+      [likeTerm, likeTerm, likeTerm]
+    );
+
+    res.json(results);
+  } catch (err) {
+    console.error("Error al buscar artículo:", err);
+    res.status(500).send(err);
+  }
 };
 
 // Listar artículos

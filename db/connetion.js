@@ -17,7 +17,7 @@ try {
     queueLimit: 0,
   });
 
-  console.log("✅ Pool de MySQL creado en Railway");
+  console.log("✅ Pool de MySQL creado en LOCAL");
 } catch (err) {
   console.error("❌ Error al conectar con MySQL:", err);
 }
